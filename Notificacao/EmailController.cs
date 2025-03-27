@@ -8,31 +8,19 @@ using Swashbuckle.AspNetCore.Annotations;
 [ApiController]
 public class EmailController : ControllerBase
 {
-    private readonly EmailService _emailService;
-
-    public EmailController(EmailService emailService)
-    {
-        _emailService = emailService;
-    }
     
-    [HttpPost("send-notification")]
-    [SwaggerOperation(Summary = "Enviar uma notificação por e-mail")]
-    public async Task<IActionResult> EnviarNotificacao([FromQuery] string para, [FromQuery] string assunto, [FromQuery] string corpo)
+    [HttpPost]
+    public async Task<IActionResult> EnviarEmail([FromBody] EmailRequest request)
     {
-        if (string.IsNullOrEmpty(para) || string.IsNullOrEmpty(assunto) || string.IsNullOrEmpty(corpo))
-        {
-            return BadRequest("Dados inválidos.");
-        }
-
-        await _emailService.EnviarEmailAsync(para, assunto, corpo);
+        await EmailService.EnviarEmailAsync(request.ToEmail, request.Subject, request.Content);
         return Ok("E-mail enviado com sucesso!");
     }
 }
 
 public class EmailRequest
 {
-    public string Para { get; set; }
-    public string Assunto { get; set; }
-    public string Corpo { get; set; }
+    public string ToEmail { get; set; }
+    public string Subject { get; set; }
+    public string Content { get; set; }
 }
 
