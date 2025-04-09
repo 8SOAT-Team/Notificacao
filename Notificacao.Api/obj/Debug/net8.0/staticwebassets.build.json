@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "p2oYMWBwHVNDK+KzHEAPKaW46cfegdWdUx90qjlo55g=",
+  "Source": "Notificacao.Api",
+  "BasePath": "_content/Notificacao.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
