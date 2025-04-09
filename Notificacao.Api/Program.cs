@@ -1,4 +1,5 @@
 using Notificacao;
+using SendGrid;
 
 var builder = WebApplication.CreateBuilder(args);
 
