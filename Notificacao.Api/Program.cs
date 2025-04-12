@@ -1,10 +1,9 @@
-using Notificacao;
-using SendGrid;
+using Amazon.SQS;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var sendGridApiKey = builder.Configuration.GetValue<string>("SendGrid:ApiKey");
-builder.Services.AddSingleton<ISendGridClient>(new SendGridClient(sendGridApiKey));
+builder.Services.AddAWSService<IAmazonSQS>();
+builder.Services.AddHostedService<EmailService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -12,8 +11,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.EnableAnnotations();
 });
-
-builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
 
@@ -23,6 +20,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

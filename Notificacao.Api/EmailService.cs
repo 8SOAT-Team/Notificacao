@@ -1,40 +1,64 @@
-using System.Net;
+using System.Text.Json;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using Notificacao;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-public class EmailService
+public class EmailService : BackgroundService
 {
-    private readonly ISendGridClient _sendGridClient;
+    private readonly IAmazonSQS _sqsClient;
+    private readonly IConfiguration _configuration;
+    private readonly string _queueUrl;
+    private readonly string _sendGridApiKey;
     
-    public EmailService(ISendGridClient sendGridClient)
+    public EmailService(IAmazonSQS sqsClient, IConfiguration configuration)
     {
-        _sendGridClient = sendGridClient ?? throw new ArgumentNullException(nameof(sendGridClient));
+        _sqsClient = sqsClient;
+        _configuration = configuration;
+        _queueUrl = _configuration["Aws:SqsQueueUrl"] ?? throw new ArgumentNullException(nameof(_queueUrl));
+        _sendGridApiKey = _configuration["SendGrid:ApiKey"] ?? throw new ArgumentNullException(nameof(_sendGridApiKey));
     }
-
-    private static readonly string apiKey = "${API_KEY}";
-
-    public async Task EnviarEmailAsync(string toEmail, string subject, string content)
+    
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var client = _sendGridClient ?? new SendGridClient(apiKey);
-
-        var from = new EmailAddress("feehvecch@gmail.com", "FastVideo");
-        var to = new EmailAddress(toEmail);
-        var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
-
-        try
+        while (!stoppingToken.IsCancellationRequested)
         {
-            var response = await client.SendEmailAsync(msg);
-            Console.WriteLine(response.StatusCode);
-            Console.WriteLine($"Status Code: {response.StatusCode}");
-            if (response.StatusCode != HttpStatusCode.OK)
+            var receiveMessageRequest = new ReceiveMessageRequest
             {
-                Console.WriteLine($"Erro ao enviar e-mail. Código de status: {response.StatusCode}");
+                QueueUrl = _queueUrl,
+                MaxNumberOfMessages = 1,
+                WaitTimeSeconds = 20
+            };
+
+            var receiveMessageResponse = await _sqsClient.ReceiveMessageAsync(receiveMessageRequest, stoppingToken);
+
+            foreach (var message in receiveMessageResponse.Messages)
+            {
+                try
+                {
+                    var emailMessage = JsonSerializer.Deserialize<EmailMessage>(message.Body);
+                    await SendEmailAsync(emailMessage);
+                    await _sqsClient.DeleteMessageAsync(_queueUrl, message.ReceiptHandle, stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    // Lidar com erros (log, etc.)
+                    Console.WriteLine($"Erro ao enviar e-mail: {ex.Message}");
+                    throw new Exception("Erro ao enviar e-mail", ex);
+                }
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao enviar e-mail: {ex.Message}");
-            throw new Exception("Erro ao enviar e-mail", ex);
-        }
+    }
+    
+    protected async Task SendEmailAsync(EmailMessage emailMessage)
+    {
+        var client = new SendGridClient(_sendGridApiKey);
+        var from = new EmailAddress("feehvecch@gmail.com", "Fast Video");
+        var to = new EmailAddress(emailMessage.ToEmail);
+        var msg = MailHelper.CreateSingleEmail(from, to, emailMessage.Subject, emailMessage.Content, emailMessage.Content);
+        await client.SendEmailAsync(msg);
     }
 }

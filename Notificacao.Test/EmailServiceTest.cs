@@ -1,94 +1,88 @@
 using Moq;
 using SendGrid.Helpers.Mail;
 using System.Net;
+using System.Text.Json;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using Microsoft.Extensions.Configuration;
+using Notificacao;
 using SendGrid;
 
 public class EmailServiceTest
 {
     [Fact]
-    public async Task EnviarEmailAsync_DeveChamarSendEmailAsyncComSucesso()
+    public async Task ExecuteAsync_ReceivesMessage_SendsEmail_DeletesMessage()
     {
         // Arrange
-        var mockSendGridClient = new Mock<ISendGridClient>();
+        var mockSqsClient = new Mock<IAmazonSQS>();
+        var mockConfiguration = new Mock<IConfiguration>();
+        
+        mockConfiguration.Setup(config => config["Aws:SqsQueueUrl"]).Returns("sua_url_da_fila");
+        mockConfiguration.Setup(config => config["SendGrid:ApiKey"]).Returns("sua_chave_api");
+        
+        mockSqsClient.Setup(client => client.ReceiveMessageAsync(It.IsAny<ReceiveMessageRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ReceiveMessageResponse
+            {
+                Messages = new List<Message> { new Message { Body = "{ \"ToEmail\": \"teste@example.com\", \"Subject\": \"Assunto\", \"Content\": \"Conteúdo\" }", ReceiptHandle = "handle" } }
+            });
+        
+        mockSqsClient.Setup(client => client.DeleteMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DeleteMessageResponse());
 
-        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = new StringContent("OK")
-        };
-
-        var mockResponse = new Mock<Response>(httpResponseMessage.StatusCode, httpResponseMessage.Content, httpResponseMessage.Headers);
-
-        mockSendGridClient.Setup(client => client.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(mockResponse.Object);
-
-        var emailService = new EmailService(mockSendGridClient.Object);
-
-        var toEmail = "test@dominio.com";
-        var subject = "Test Subject";
-        var content = "Test Content";
+        var service = new TestableEmailService(mockSqsClient.Object, mockConfiguration.Object);
 
         // Act
-        await emailService.EnviarEmailAsync(toEmail, subject, content);
+        await service.ExecuteAsync(CancellationToken.None);
 
         // Assert
-        mockSendGridClient.Verify(client => client.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()), Times.Once);
+        mockSqsClient.Verify(client => client.ReceiveMessageAsync(It.IsAny<ReceiveMessageRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+        mockSqsClient.Verify(client => client.DeleteMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
-    
-    [Fact]
-    public async Task EnviarEmailAsync_DeveTratarErroAoEnviarEmail()
-    {
-        // Arrange
-        var mockSendGridClient = new Mock<ISendGridClient>();
 
-        var statusCode = HttpStatusCode.InternalServerError; 
-        var responseBody = new StringContent("Internal Server Error"); 
-        var responseMessage = new HttpResponseMessage(statusCode)
+    
+    public class TestableEmailService : EmailService
+    {
+        protected IConfiguration Configuration { get; }
+        protected IAmazonSQS SqsClient { get; }
+
+        public TestableEmailService(IAmazonSQS sqsClient, IConfiguration configuration) : base(sqsClient, configuration)
         {
-            Content = responseBody
-        };
-        
-        responseMessage.Headers.Add("X-Error", "Something went wrong");
+            Configuration = configuration;
+            SqsClient = sqsClient;
+        }
 
-        var mockResponse = new Mock<Response>(statusCode, responseBody, responseMessage.Headers);
+        public async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            var queueUrl = Configuration["Aws:SqsQueueUrl"];
+            var sqsClient = SqsClient;
+            var receiveMessageRequest = new ReceiveMessageRequest
+            {
+                QueueUrl = queueUrl,
+                MaxNumberOfMessages = 1,
+                WaitTimeSeconds = 20
+            };
 
-        mockSendGridClient.Setup(client => client.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(mockResponse.Object);
+            var receiveMessageResponse = await sqsClient.ReceiveMessageAsync(receiveMessageRequest, stoppingToken);
 
-        var emailService = new EmailService(mockSendGridClient.Object);
+            foreach (var message in receiveMessageResponse.Messages)
+            {
+                try
+                {
+                    var emailMessage = JsonSerializer.Deserialize<EmailMessage>(message.Body);
+                    await SendEmailAsync(emailMessage);
+                    await sqsClient.DeleteMessageAsync(queueUrl, message.ReceiptHandle, stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    // Lidar com erros (log, etc.)
+                    Console.WriteLine($"Erro ao enviar e-mail: {ex.Message}");
+                    throw new Exception("Erro ao enviar e-mail", ex);
+                }
+            }
 
-        var toEmail = "test@dominio.com";
-        var subject = "Test Subject";
-        var content = "Test Content";
-
-        // Act & Assert
-        await emailService.EnviarEmailAsync(toEmail, subject, content);
-
-        mockSendGridClient.Verify(client => client.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()), Times.Once);
+            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+        }
     }
-
-    
-    [Fact]
-    public async Task EnviarEmailAsync_DeveTratarErroAoEnviarEmailComExcecao()
-    {
-        // Arrange
-        var mockSendGridClient = new Mock<ISendGridClient>();
-
-        mockSendGridClient.Setup(client => client.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Erro ao enviar e-mail"));
-
-        var emailService = new EmailService(mockSendGridClient.Object);
-
-        var toEmail = "test@dominio.com";
-        var subject = "Test Subject";
-        var content = "Test Content";
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<Exception>(() => emailService.EnviarEmailAsync(toEmail, subject, content));
-
-        Assert.Equal("Erro ao enviar e-mail", exception.Message);
-        mockSendGridClient.Verify(client => client.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()), Times.Once);
-    }
-
 
 
 }
