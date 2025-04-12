@@ -1,0 +1,6 @@
+services:
+  notificacao.api:
+    image: ${DOCKER_REGISTRY-}notificacaoapi
+    build:
+      context: .
+      dockerfile: Notificacao.Api/Dockerfile
