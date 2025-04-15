@@ -33,20 +33,38 @@ public class EmailService : BackgroundService
 
             var receiveMessageResponse = await _sqsClient.ReceiveMessageAsync(receiveMessageRequest, stoppingToken);
 
-            foreach (var message in receiveMessageResponse.Messages)
+            if (receiveMessageResponse.Messages != null && receiveMessageResponse.Messages.Any())
             {
-                try
+                foreach (var message in receiveMessageResponse.Messages)
                 {
-                    var emailMessage = JsonSerializer.Deserialize<EmailMessage>(message.Body);
-                    await SendEmailAsync(emailMessage);
-                    await _sqsClient.DeleteMessageAsync(_queueUrl, message.ReceiptHandle, stoppingToken);
+                    try
+                    {
+                        var emailMessage = JsonSerializer.Deserialize<EmailMessage>(message.Body);
+
+                        if (emailMessage != null)
+                        {
+                            await SendEmailAsync(emailMessage);
+                            await _sqsClient.DeleteMessageAsync(_queueUrl, message.ReceiptHandle, stoppingToken);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Mensagem SQS vazia ou inválida. Corpo da mensagem: {message.Body}");
+                        }
+
+                    }
+                    catch (JsonException ex)
+                    {
+                        Console.WriteLine($"Erro ao desserializar JSON: {ex.Message}, Corpo da mensagem: {message.Body}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Erro ao processar mensagem SQS: {ex.Message}");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    // Lidar com erros (log, etc.)
-                    Console.WriteLine($"Erro ao enviar e-mail: {ex.Message}");
-                    throw new Exception("Erro ao enviar e-mail", ex);
-                }
+            }
+            else
+            {
+                Console.WriteLine("Nenhuma mensagem recebida do SQS.");
             }
 
             await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
