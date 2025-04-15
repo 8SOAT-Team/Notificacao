@@ -4,3 +4,9 @@ services:
     build:
       context: .
       dockerfile: Notificacao.Api/Dockerfile
+    environment:
+    - AWS_REGION=us-east-1
+    - AWS_ACCESS_KEY_ID=${chave_acesso}
+    - AWS_SECRET_ACCESS_KEY=${secret}
+    ports:
+        - "8080:80"
