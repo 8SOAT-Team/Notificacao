@@ -77,4 +77,4 @@ jobs:
         run: |
           kubectl apply -f iac/kubernetes/namespace.yaml
           kubectl apply -f iac/kubernetes
-          kubectl rollout status deployment/Notificacao-dep -n fast-order
+          kubectl rollout status deployment/Notificacao-dep -n fast-video
