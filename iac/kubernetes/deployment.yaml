@@ -1,47 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: notificacao-dep
-  namespace: fast-video
-  labels:
-    app: notificacao
+  name: notificacao-api
+  namespace: notificacao
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: notificacao
+      app: notificacao-api
   template:
     metadata:
       labels:
-        app: notificacao
+        app: notificacao-api
     spec:
       containers:
-      - name: notificacao-cont
-        image: sickbanger/notificacao:latest
-        ports:
-        - containerPort: 5271
-        - containerPort: 7205
-        envFrom:
-          - configMapRef:
-              name: notificacao-configmap
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 5271
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 5271
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          failureThreshold: 3
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
+        - name: notificacao-api
+          image: sickbanger/notificacao-api:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: notificacao-config
+            - secretRef:
+                name: notificacao-secrets
+          readinessProbe:
+            httpGet:
+              path: /swagger/index.html
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /swagger/index.html
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"

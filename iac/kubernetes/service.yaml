@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: notificacao-svc
-  namespace: fast-video
+  name: notificacao-api
 spec:
   selector:
-    app: notificacao
-  type: LoadBalancer
+    app: notificacao-api
   ports:
-    - port: 80
-      name: http
-      targetPort: 5271
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

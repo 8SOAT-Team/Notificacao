@@ -1,14 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: notificacao-hpa
-  namespace: fast-order
+  name: notificacao-api-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: notificacao-dep
-  minReplicas: 1
+    name: notificacao-api
+  minReplicas: 2
   maxReplicas: 10
   metrics:
     - type: Resource
@@ -16,4 +15,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 30
+          averageUtilization: 70
