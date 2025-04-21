@@ -4,5 +4,5 @@ metadata:
   name: notificacao-config
   namespace: default
 data:
-  Aws__SqsQueueUrl: https://sqs.sa-east-1.amazonaws.com/123456789012/minha-fila
+  Aws__SqsQueueUrl: https://sqs.us-east-1.amazonaws.com/585008076257/terraform-example-queue.fifo
   AllowedHosts: "*"
