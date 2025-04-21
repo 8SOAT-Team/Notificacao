@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: notificacao-config
-  namespace: default
+  namespace: fast-video
 data:
   Aws__SqsQueueUrl: https://sqs.us-east-1.amazonaws.com/585008076257/terraform-example-queue.fifo
   AllowedHosts: "*"

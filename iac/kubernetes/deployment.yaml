@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: notificacao-api
-  namespace: notificacao
+  namespace: fast-video
 spec:
   replicas: 2
   selector:

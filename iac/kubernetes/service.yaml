@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: notificacao-api
+  namespace: fast-video
 spec:
   selector:
     app: notificacao-api

@@ -2,6 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: notificacao-api-hpa
+  namespace: fast-video
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
