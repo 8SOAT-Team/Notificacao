@@ -27,12 +27,12 @@ jobs:
 
       - name: Restore dependencies
         run: |
-          cd src/Notificacao.Api
+          cd ./Notificacao.Api
           dotnet restore Notificacao.Api.csproj
 
       - name: Build and publish
         run: |
-          cd src/Notificacao.Api
+          cd ./Notificacao.Api
           dotnet publish Notificacao.Api.csproj -c Release -o app/publish /p:UseAppHost=false
 
       - name: Login to Docker Hub
@@ -73,7 +73,7 @@ jobs:
           aws eks update-kubeconfig --region us-east-1 --name video-processor-eks-cluster
 
       - name: Deploy to EKS Cluster
-        if: ${{ inputs.deploy == 'true' }}
+        if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
           kubectl apply -f iac/kubernetes/namespace.yaml
           kubectl apply -f iac/kubernetes
