@@ -76,5 +76,6 @@ jobs:
         if: ${{ github.event.inputs.deploy == 'true' }}
         run: |
           kubectl apply -f iac/kubernetes/namespace.yaml
+          kubectl apply -f iac/kubernetes/service-account.yaml
           kubectl apply -f iac/kubernetes
           kubectl rollout status deployment/notificacao-api -n fast-video
