@@ -13,6 +13,7 @@ spec:
       labels:
         app: notificacao-api
     spec:
+      serviceAccountName: notificacao-api-sa
       containers:
         - name: notificacao-api
           image: sickbanger/notificacao-api:latest
