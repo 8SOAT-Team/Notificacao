@@ -77,5 +77,9 @@ jobs:
         run: |
           kubectl apply -f iac/kubernetes/namespace.yaml
           kubectl apply -f iac/kubernetes/service-account.yaml
-          kubectl apply -f iac/kubernetes
+          kubectl apply -f iac/kubernetes/configmap.yaml
+          kubectl apply -f iac/kubernetes/secrets.yaml
+          kubectl apply -f iac/kubernetes/deployment.yaml
+          kubectl apply -f iac/kubernetes/service.yaml
+          kubectl apply -f iac/kubernetes/hpa.yaml
           kubectl rollout status deployment/notificacao-api -n fast-video
