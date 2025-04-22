@@ -7,6 +7,9 @@ micro serviço gestor de notificações
 Este repositório contém o microserviço de notificação, desenvolvido utilizando .NET 8 e o disparo de e-mail é feito via SendGrid. 
 O processo de build, publicação e deployment funciona via workflow no GitHub Actions.
 
+## Diagrama da Arquitetura de Infraestrutura
+![Diagrama da Arquitetura de Infraestrutura](/FastVideo.drawio.png)
+
 ## Autores
 ### Fiap turma 8SOAT - Grupo 7
 
