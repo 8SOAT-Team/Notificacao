@@ -4,5 +4,5 @@ metadata:
   name: notificacao-config
   namespace: fast-video
 data:
-  Aws__SqsQueueUrl: https://sqs.us-east-1.amazonaws.com/585008076257/terraform-example-queue.fifo
+  Aws__SqsQueueUrl: https://sqs.us-east-1.amazonaws.com/585008076257/notification-queue.fifo
   AllowedHosts: "*"
