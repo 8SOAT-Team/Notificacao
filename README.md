@@ -10,6 +10,9 @@ O processo de build, publicação e deployment funciona via workflow no GitHub A
 ## Diagrama da Arquitetura de Infraestrutura
 ![Diagrama da Arquitetura de Infraestrutura](/FastVideo.drawio.png)
 
+## SendGrid
+é uma plataforma de comunicação com o cliente baseada em Denver, Colorado, para e-mail transacional e de marketing. Foi criada uma API Key no SendGrid com o e-mail de um dos autores do projeto. Assim, os e-mails disparados via requisição SQS serão enviados por este e-mail.
+
 ## Autores
 ### Fiap turma 8SOAT - Grupo 7
 
