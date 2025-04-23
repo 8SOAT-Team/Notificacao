@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "UzJxvNNTudY=",
+  "dgSpecHash": "dH+nAzvD5i8=",
   "success": true,
   "projectFilePath": "C:\\Users\\FERNANDA\\RiderProjects\\Notificacao\\Notificacao.Test\\Notificacao.Test.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\FERNANDA\\.nuget\\packages\\awssdk.cognitoidentityprovider\\4.0.0-preview.13\\awssdk.cognitoidentityprovider.4.0.0-preview.13.nupkg.sha512",
     "C:\\Users\\FERNANDA\\.nuget\\packages\\awssdk.core\\4.0.0-preview.13\\awssdk.core.4.0.0-preview.13.nupkg.sha512",
     "C:\\Users\\FERNANDA\\.nuget\\packages\\awssdk.extensions.netcore.setup\\4.0.0-preview.13\\awssdk.extensions.netcore.setup.4.0.0-preview.13.nupkg.sha512",
+    "C:\\Users\\FERNANDA\\.nuget\\packages\\awssdk.securitytoken\\4.0.0-preview.13\\awssdk.securitytoken.4.0.0-preview.13.nupkg.sha512",
     "C:\\Users\\FERNANDA\\.nuget\\packages\\awssdk.sqs\\4.0.0-preview.13\\awssdk.sqs.4.0.0-preview.13.nupkg.sha512",
     "C:\\Users\\FERNANDA\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\FERNANDA\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",

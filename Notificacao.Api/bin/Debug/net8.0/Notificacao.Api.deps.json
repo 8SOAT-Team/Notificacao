@@ -8,8 +8,10 @@
     ".NETCoreApp,Version=v8.0": {
       "Notificacao.Api/1.0.0": {
         "dependencies": {
+          "AWSSDK.CognitoIdentityProvider": "4.0.0-preview.13",
           "AWSSDK.Extensions.NETCore.Setup": "4.0.0-preview.13",
           "AWSSDK.SQS": "4.0.0-preview.13",
+          "AWSSDK.SecurityToken": "4.0.0-preview.13",
           "Microsoft.AspNetCore.OpenApi": "8.0.8",
           "Microsoft.Extensions.Configuration": "10.0.0-preview.3.25171.5",
           "Microsoft.Extensions.Hosting": "10.0.0-preview.3.25171.5",
@@ -20,6 +22,17 @@
         },
         "runtime": {
           "Notificacao.Api.dll": {}
+        }
+      },
+      "AWSSDK.CognitoIdentityProvider/4.0.0-preview.13": {
+        "dependencies": {
+          "AWSSDK.Core": "4.0.0-preview.13"
+        },
+        "runtime": {
+          "lib/net8.0/AWSSDK.CognitoIdentityProvider.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.0.0"
+          }
         }
       },
       "AWSSDK.Core/4.0.0-preview.13": {
@@ -39,6 +52,17 @@
         },
         "runtime": {
           "lib/net8.0/AWSSDK.Extensions.NETCore.Setup.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "AWSSDK.SecurityToken/4.0.0-preview.13": {
+        "dependencies": {
+          "AWSSDK.Core": "4.0.0-preview.13"
+        },
+        "runtime": {
+          "lib/net8.0/AWSSDK.SecurityToken.dll": {
             "assemblyVersion": "4.0.0.0",
             "fileVersion": "4.0.0.0"
           }
@@ -590,6 +614,13 @@
       "serviceable": false,
       "sha512": ""
     },
+    "AWSSDK.CognitoIdentityProvider/4.0.0-preview.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-z7Kyhn511S8HTE0+lFYfoyaQm2vmyaEbj2EMzyM7bcSa3HyA4GnabMan1DPoeDHg6BfePO00HE6jje+FBqZ9dw==",
+      "path": "awssdk.cognitoidentityprovider/4.0.0-preview.13",
+      "hashPath": "awssdk.cognitoidentityprovider.4.0.0-preview.13.nupkg.sha512"
+    },
     "AWSSDK.Core/4.0.0-preview.13": {
       "type": "package",
       "serviceable": true,
@@ -603,6 +634,13 @@
       "sha512": "sha512-ftrm2lXy6lPS1sEijBEMbg2fr6pl1nAMImI2naYpOM8YmCVbbJqbsTcC2ofwzWaqTyvGXpW3mbC14hdE2FVyNQ==",
       "path": "awssdk.extensions.netcore.setup/4.0.0-preview.13",
       "hashPath": "awssdk.extensions.netcore.setup.4.0.0-preview.13.nupkg.sha512"
+    },
+    "AWSSDK.SecurityToken/4.0.0-preview.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tElcDIlPipBoDfw4huuwmKzrEYjUC7H9Eo/EbL9XfFqpxmPHt+zirne5BxNPMBbTB8mkUlSFh+fjPU1e9iq55Q==",
+      "path": "awssdk.securitytoken/4.0.0-preview.13",
+      "hashPath": "awssdk.securitytoken.4.0.0-preview.13.nupkg.sha512"
     },
     "AWSSDK.SQS/4.0.0-preview.13": {
       "type": "package",

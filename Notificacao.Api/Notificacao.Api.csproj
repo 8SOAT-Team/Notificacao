@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="4.0.0-preview.13" />
         <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.0-preview.13" />
         <PackageReference Include="AWSSDK.SQS" Version="4.0.0-preview.13" />
         <PackageReference Include="AWSSDK.SecurityToken" Version="4.0.0-preview.13" />

@@ -46,11 +46,19 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AWSSDK.CognitoIdentityProvider": {
+              "target": "Package",
+              "version": "[4.0.0-preview.13, )"
+            },
             "AWSSDK.Extensions.NETCore.Setup": {
               "target": "Package",
               "version": "[4.0.0-preview.13, )"
             },
             "AWSSDK.SQS": {
+              "target": "Package",
+              "version": "[4.0.0-preview.13, )"
+            },
+            "AWSSDK.SecurityToken": {
               "target": "Package",
               "version": "[4.0.0-preview.13, )"
             },

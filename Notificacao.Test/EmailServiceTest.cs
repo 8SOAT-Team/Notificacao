@@ -2,6 +2,7 @@ using Moq;
 using SendGrid.Helpers.Mail;
 using System.Net;
 using System.Text.Json;
+using Amazon.CognitoIdentityProvider;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Microsoft.Extensions.Configuration;
@@ -16,20 +17,22 @@ public class EmailServiceTest
         // Arrange
         var mockSqsClient = new Mock<IAmazonSQS>();
         var mockConfiguration = new Mock<IConfiguration>();
+        var mockCoginito = new Mock<IAmazonCognitoIdentityProvider>();
         
         mockConfiguration.Setup(config => config["Aws:SqsQueueUrl"]).Returns("sua_url_da_fila");
         mockConfiguration.Setup(config => config["SendGrid:ApiKey"]).Returns("sua_chave_api");
+        mockConfiguration.Setup(config => config["Aws:CognitoUserPoolId"]).Returns("sua_user_pool_id");
         
         mockSqsClient.Setup(client => client.ReceiveMessageAsync(It.IsAny<ReceiveMessageRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ReceiveMessageResponse
             {
-                Messages = new List<Message> { new Message { Body = "{ \"ToEmail\": \"teste@example.com\", \"Subject\": \"Assunto\", \"Content\": \"Conteúdo\" }", ReceiptHandle = "handle" } }
+                Messages = new List<Message> { new Message { Body = "{ \"RequestProcessId\": \"123\", \"UploadResultSecceeded\": \"false\" }", ReceiptHandle = "handle" } }
             });
         
         mockSqsClient.Setup(client => client.DeleteMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DeleteMessageResponse());
 
-        var service = new TestableEmailService(mockSqsClient.Object, mockConfiguration.Object);
+        var service = new TestableEmailService(mockSqsClient.Object, mockConfiguration.Object, mockCoginito.Object);
 
         // Act
         await service.ExecuteAsync(CancellationToken.None);
@@ -45,7 +48,7 @@ public class EmailServiceTest
         protected IConfiguration Configuration { get; }
         protected IAmazonSQS SqsClient { get; }
 
-        public TestableEmailService(IAmazonSQS sqsClient, IConfiguration configuration) : base(sqsClient, configuration)
+        public TestableEmailService(IAmazonSQS sqsClient, IConfiguration configuration, IAmazonCognitoIdentityProvider coginito) : base(sqsClient, configuration, coginito)
         {
             Configuration = configuration;
             SqsClient = sqsClient;
@@ -69,7 +72,7 @@ public class EmailServiceTest
                 try
                 {
                     var emailMessage = JsonSerializer.Deserialize<EmailMessage>(message.Body);
-                    await SendEmailAsync(emailMessage);
+                    await SendEmailAsync(emailMessage.ToEmail, emailMessage.Subject, emailMessage.Content);
                     await sqsClient.DeleteMessageAsync(queueUrl, message.ReceiptHandle, stoppingToken);
                 }
                 catch (Exception ex)

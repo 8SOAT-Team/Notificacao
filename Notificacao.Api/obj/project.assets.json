@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "AWSSDK.CognitoIdentityProvider/4.0.0-preview.13": {
+        "type": "package",
+        "dependencies": {
+          "AWSSDK.Core": "[4.0.0-preview.13, 5.0.0-preview.13)"
+        },
+        "compile": {
+          "lib/net8.0/AWSSDK.CognitoIdentityProvider.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/AWSSDK.CognitoIdentityProvider.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "AWSSDK.Core/4.0.0-preview.13": {
         "type": "package",
         "compile": {
@@ -35,6 +51,22 @@
         },
         "build": {
           "buildTransitive/net8.0/AWSSDK.Extensions.NETCore.Setup.targets": {}
+        }
+      },
+      "AWSSDK.SecurityToken/4.0.0-preview.13": {
+        "type": "package",
+        "dependencies": {
+          "AWSSDK.Core": "[4.0.0-preview.13, 5.0.0-preview.13)"
+        },
+        "compile": {
+          "lib/net8.0/AWSSDK.SecurityToken.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/AWSSDK.SecurityToken.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "AWSSDK.SQS/4.0.0-preview.13": {
@@ -901,6 +933,35 @@
     }
   },
   "libraries": {
+    "AWSSDK.CognitoIdentityProvider/4.0.0-preview.13": {
+      "sha512": "z7Kyhn511S8HTE0+lFYfoyaQm2vmyaEbj2EMzyM7bcSa3HyA4GnabMan1DPoeDHg6BfePO00HE6jje+FBqZ9dw==",
+      "type": "package",
+      "path": "awssdk.cognitoidentityprovider/4.0.0-preview.13",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/dotnet/cs/AWSSDK.CognitoIdentityProvider.CodeAnalysis.dll",
+        "analyzers/dotnet/cs/SharedAnalysisCode.dll",
+        "awssdk.cognitoidentityprovider.4.0.0-preview.13.nupkg.sha512",
+        "awssdk.cognitoidentityprovider.nuspec",
+        "images/AWSLogo.png",
+        "lib/net472/AWSSDK.CognitoIdentityProvider.dll",
+        "lib/net472/AWSSDK.CognitoIdentityProvider.pdb",
+        "lib/net472/AWSSDK.CognitoIdentityProvider.xml",
+        "lib/net8.0/AWSSDK.CognitoIdentityProvider.dll",
+        "lib/net8.0/AWSSDK.CognitoIdentityProvider.pdb",
+        "lib/net8.0/AWSSDK.CognitoIdentityProvider.xml",
+        "lib/netcoreapp3.1/AWSSDK.CognitoIdentityProvider.dll",
+        "lib/netcoreapp3.1/AWSSDK.CognitoIdentityProvider.pdb",
+        "lib/netcoreapp3.1/AWSSDK.CognitoIdentityProvider.xml",
+        "lib/netstandard2.0/AWSSDK.CognitoIdentityProvider.dll",
+        "lib/netstandard2.0/AWSSDK.CognitoIdentityProvider.pdb",
+        "lib/netstandard2.0/AWSSDK.CognitoIdentityProvider.xml",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    },
     "AWSSDK.Core/4.0.0-preview.13": {
       "sha512": "v4Yp+FkUeGvNFydA5843upHvUX7SnLRCKAICiRl6tD+lvPvW5nrwZX2ivVa8hKvFrV3E9u+985Jp1WINieOEqA==",
       "type": "package",
@@ -950,6 +1011,35 @@
         "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.dll",
         "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.pdb",
         "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.xml"
+      ]
+    },
+    "AWSSDK.SecurityToken/4.0.0-preview.13": {
+      "sha512": "tElcDIlPipBoDfw4huuwmKzrEYjUC7H9Eo/EbL9XfFqpxmPHt+zirne5BxNPMBbTB8mkUlSFh+fjPU1e9iq55Q==",
+      "type": "package",
+      "path": "awssdk.securitytoken/4.0.0-preview.13",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/dotnet/cs/AWSSDK.SecurityToken.CodeAnalysis.dll",
+        "analyzers/dotnet/cs/SharedAnalysisCode.dll",
+        "awssdk.securitytoken.4.0.0-preview.13.nupkg.sha512",
+        "awssdk.securitytoken.nuspec",
+        "images/AWSLogo.png",
+        "lib/net472/AWSSDK.SecurityToken.dll",
+        "lib/net472/AWSSDK.SecurityToken.pdb",
+        "lib/net472/AWSSDK.SecurityToken.xml",
+        "lib/net8.0/AWSSDK.SecurityToken.dll",
+        "lib/net8.0/AWSSDK.SecurityToken.pdb",
+        "lib/net8.0/AWSSDK.SecurityToken.xml",
+        "lib/netcoreapp3.1/AWSSDK.SecurityToken.dll",
+        "lib/netcoreapp3.1/AWSSDK.SecurityToken.pdb",
+        "lib/netcoreapp3.1/AWSSDK.SecurityToken.xml",
+        "lib/netstandard2.0/AWSSDK.SecurityToken.dll",
+        "lib/netstandard2.0/AWSSDK.SecurityToken.pdb",
+        "lib/netstandard2.0/AWSSDK.SecurityToken.xml",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
       ]
     },
     "AWSSDK.SQS/4.0.0-preview.13": {
@@ -2510,8 +2600,10 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "AWSSDK.CognitoIdentityProvider >= 4.0.0-preview.13",
       "AWSSDK.Extensions.NETCore.Setup >= 4.0.0-preview.13",
       "AWSSDK.SQS >= 4.0.0-preview.13",
+      "AWSSDK.SecurityToken >= 4.0.0-preview.13",
       "Microsoft.AspNetCore.OpenApi >= 8.0.8",
       "Microsoft.Extensions.Configuration >= 10.0.0-preview.3.25171.5",
       "Microsoft.Extensions.Hosting >= 10.0.0-preview.3.25171.5",
@@ -2566,11 +2658,19 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "AWSSDK.CognitoIdentityProvider": {
+            "target": "Package",
+            "version": "[4.0.0-preview.13, )"
+          },
           "AWSSDK.Extensions.NETCore.Setup": {
             "target": "Package",
             "version": "[4.0.0-preview.13, )"
           },
           "AWSSDK.SQS": {
+            "target": "Package",
+            "version": "[4.0.0-preview.13, )"
+          },
+          "AWSSDK.SecurityToken": {
             "target": "Package",
             "version": "[4.0.0-preview.13, )"
           },

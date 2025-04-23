@@ -1,4 +1,5 @@
 using Amazon.SQS;
+using Notificacao;
 
 var builder = WebApplication.CreateBuilder(args);
 
