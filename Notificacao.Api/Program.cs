@@ -1,9 +1,12 @@
 using Amazon.SQS;
+using Amazon.CognitoIdentityProvider;
 using Notificacao;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAWSService<IAmazonSQS>();
+builder.Services.AddAWSService<IAmazonCognitoIdentityProvider>();
+
 builder.Services.AddHostedService<EmailService>();
 
 builder.Services.AddControllers();
@@ -24,5 +27,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();
