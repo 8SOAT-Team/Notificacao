@@ -98,21 +98,27 @@ namespace Notificacao
             }
         }
 
-        private async Task<string> GetUserEmailFromCognito(string requestProcessId)
+        private async Task<string> GetUserEmailFromCognito(string requestProcessId) 
         {
             try
             {
-                var adminGetUserRequest = new AdminGetUserRequest
+                var request = new ListUsersRequest
                 {
                     UserPoolId = _userPoolId,
-                    Username = requestProcessId
+                    Filter = $"sub = \"{requestProcessId}\""
                 };
 
-                var adminGetUserResponse = await _cognitoClient.AdminGetUserAsync(adminGetUserRequest);
+                var response = await _cognitoClient.ListUsersAsync(request);
 
-                var emailAttribute = adminGetUserResponse.UserAttributes.FirstOrDefault(attr => attr.Name == "email");
-
-                return emailAttribute?.Value;
+                if (response.Users.Count > 0)
+                {
+                    var user = response.Users[0];
+                    foreach (var attr in user.Attributes)
+                    {
+                        if (attr.Name == "email")
+                            return attr.Value;
+                    }
+                }
             }
             catch (UserNotFoundException)
             {
@@ -124,6 +130,8 @@ namespace Notificacao
                 Console.WriteLine($"Erro ao buscar usuário no Cognito: {ex.Message}");
                 return null;
             }
+
+            return null;
         }
 
         protected async Task SendEmailAsync(string toEmail, string subject, string content)
